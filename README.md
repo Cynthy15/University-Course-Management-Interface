@@ -139,19 +139,11 @@ To build the project for production:
 npm run build
 ```
 
-It is deployed using platform:
+It is deployed using the platform:
 
 * Vercel
 
   live demo:https://university-course-management-interf-ashen.vercel.app/
-
----
-
-## GitHub Repository Requirements
-
-* Minimum of 10 commits
-* Clear commit messages
-* Organized file structure
 
 ---
 
