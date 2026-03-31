@@ -20,9 +20,9 @@ export const getCourses = async () => {
         const response = await api.get('/courses');
         return response.data;
     } catch(err) {
-        // Fallback for demonstration if the API is returning 404
-        if(err.response?.status === 404) {
-            console.warn("API returned 404, using mock data for courses");
+        // Fallback for demonstration if the API is returning 404 or CORS (Network Error)
+        if(err.response?.status === 404 || err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
+            console.warn("API unavailable (CORS/404), using mock data for courses");
             const mock = localStorage.getItem('mock_courses');
             return mock ? JSON.parse(mock) : [];
         }
@@ -35,7 +35,7 @@ export const getCourseById = async (id) => {
         const response = await api.get(`/courses/${id}`);
         return response.data;
     } catch(err) {
-        if(err.response?.status === 404) {
+        if(err.response?.status === 404 || err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
             const mock = JSON.parse(localStorage.getItem('mock_courses') || '[]');
             return mock.find(c => String(c.id) === String(id));
         }
@@ -48,7 +48,7 @@ export const createCourse = async (courseData) => {
         const response = await api.post('/courses', courseData);
         return response.data;
     } catch(err) {
-        if(err.response?.status === 404) {
+        if(err.response?.status === 404 || err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
              const mock = JSON.parse(localStorage.getItem('mock_courses') || '[]');
              const newCourse = { ...courseData, id: Date.now() };
              mock.push(newCourse);
@@ -64,7 +64,7 @@ export const updateCourse = async (id, courseData) => {
         const response = await api.put(`/courses/${id}`, courseData);
         return response.data;
     } catch(err) {
-        if(err.response?.status === 404) {
+        if(err.response?.status === 404 || err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
              const mock = JSON.parse(localStorage.getItem('mock_courses') || '[]');
              const index = mock.findIndex(c => String(c.id) === String(id));
              if(index !== -1) {
@@ -82,7 +82,7 @@ export const deleteCourse = async (id) => {
         const response = await api.delete(`/courses/${id}`);
         return response.data;
     } catch(err) {
-         if(err.response?.status === 404) {
+         if(err.response?.status === 404 || err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
              let mock = JSON.parse(localStorage.getItem('mock_courses') || '[]');
              mock = mock.filter(c => String(c.id) !== String(id));
              localStorage.setItem('mock_courses', JSON.stringify(mock));
@@ -98,7 +98,7 @@ export const login = async (email, password) => {
      const response = await api.post('/auth/login', { email, password });
      return response.data;
   } catch(err) {
-      if(err.response?.status === 404) {
+      if(err.response?.status === 404 || err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
           // Mock login
          if (email === 'admin@example.com' && password === 'adminpassword123') {
             return { token: 'mock-jwt-token-for-testing' };
